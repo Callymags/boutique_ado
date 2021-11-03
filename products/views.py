@@ -9,6 +9,7 @@ def all_products(request):
     """ A view to show all products, including sorting and search queries """ 
 
     products = Product.objects.all()
+    # Need to be defined in order to return proper teplate when not using them
     query = None
     categories = None
     sort = None 
@@ -17,11 +18,16 @@ def all_products(request):
     if request.GET:
         if 'sort' in request.GET:
             sortkey = request.GET['sort']
+            """
+            Copy sort param into sortkey to preserve original 'name' field we wanted to sort on
+            If this is not done we would lose the original 'name' field
+            """
             sort = sortkey
             if sortkey == 'name':
                 sortkey = 'lower_name'
-                products = products.annotate(lower_name=Lower('name'))    
-
+                products = products.annotate(lower_name=Lower('name'))
+            if sortkey == 'category': 
+                sortkey = 'category__name' # __ allows us to drill into a related model   
             if 'direction' in request.GET: 
                 direction = request.GET['direction']
                 if direction == 'desc':
@@ -44,6 +50,7 @@ def all_products(request):
             queries = Q(name__icontains=query) | Q(description__icontains=query)
             products = products.filter(queries)
 
+    # Return current sorting methodolgy to template
     current_sorting = f'{sort}_{direction}'
 
     context = {
