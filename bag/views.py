@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, HttpResponse
 
 # Create your views here.
 
@@ -59,6 +59,9 @@ def adjust_bag(request, item_id):
         # Remove the item from bag if quantity = 0
         else:
             del bag[item_id]['items_by_size'][size]
+            # If only size in bag, remove item id so that there is not an empty 'items_by_size' dictionary
+            if not bag[item_id]['items_by_size']:
+                bag.pop(item_id)
     # If item doesn't have a size
     else:
         if quantity > 0:
@@ -70,3 +73,30 @@ def adjust_bag(request, item_id):
     # Redirect back to bag url using reverse function
     return redirect(reverse('view_bag'))
 
+
+def remove_from_bag(request, item_id):
+    """Remove the item from the shopping bag"""
+
+    try:
+        size = None 
+        if 'product_size' in request.POST:
+            size = request.POST['product_size']
+        bag = request.session.get('bag', {})
+
+        # If item has size
+        if size:
+            # Remove only the specific size requested
+            del bag[item_id]['items_by_size'][size]
+            # If only size in bag, remove item id so that there is not an empty 'items_by_size' dictionary
+            if not bag[item_id]['items_by_size']:
+                bag.pop(item_id)
+        # If item doesn't have a size
+        else:  
+            bag.pop(item_id)
+
+        request.session['bag'] = bag
+        # Redirect back to bag url using reverse function
+        return HttpResponse(status=200)
+        
+    except Exception as e:
+        return HttpResponse(status=500)
