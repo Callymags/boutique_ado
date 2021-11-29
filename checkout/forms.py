@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order 
+from .models import Order
 
 
 class OrderForm(forms.ModelForm):
@@ -7,9 +7,9 @@ class OrderForm(forms.ModelForm):
         model = Order
         # Fields that will be automatically calculated not included here
         fields = ('full_name', 'email', 'phone_number',
-                   'street_address1', 'street_address2',
-                   'town_or_city', 'postcode', 'country', 
-                   'county',)
+                  'street_address1', 'street_address2',
+                  'town_or_city', 'postcode', 'country', 
+                  'county',)
     def __init__(self, *args, **kwargs):
         """
         Add placeholders and classes, remove auto-generated labels 
@@ -26,7 +26,7 @@ class OrderForm(forms.ModelForm):
             'postcode': 'Postal Code',
             'town_or_city': 'Town or City',
             'street_address1': 'Street Address 1',
-            'street _address2': 'Street Address 2',
+            'street_address2': 'Street Address 2',
             'county': 'County',
         }
 
