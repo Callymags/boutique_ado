@@ -8,7 +8,7 @@ class OrderForm(forms.ModelForm):
         # Fields that will be automatically calculated not included here
         fields = ('full_name', 'email', 'phone_number',
                   'street_address1', 'street_address2',
-                  'town_or_city', 'postcode', 'country', 
+                  'town_or_city', 'postcode', 'country',
                   'county',)
     def __init__(self, *args, **kwargs):
         """
@@ -22,25 +22,25 @@ class OrderForm(forms.ModelForm):
             'full_name': 'Full Name',
             'email': 'Email Address',
             'phone_number': 'Phone Number',
-            'country': 'Country',
             'postcode': 'Postal Code',
             'town_or_city': 'Town or City',
             'street_address1': 'Street Address 1',
             'street_address2': 'Street Address 2',
-            'county': 'County',
+            'county': 'County, State or Locality',
         }
 
         # Autofocus will start in Full name field as it is set to true
         self.fields['full_name'].widget.attrs['autofocus'] = True
         # Iterate through form fields
         for field in self.fields:
-            if self.fields[field].required:
-                # Add a star to field if it is required
-                placeholder = f'{placeholders[field]} *'
-            else:
-                placeholder = placeholders[field]
-            # Set all fields to their values using placeholders dict above on line 21
-            self.fields[field].widget.attrs['placeholder'] = placeholder
+            if field != 'country':
+                if self.fields[field].required:
+                    # Add a star to field if it is required
+                    placeholder = f'{placeholders[field]} *'
+                else:
+                    placeholder = placeholders[field]
+                # Set all fields to their values using placeholders dict above on line 21
+                self.fields[field].widget.attrs['placeholder'] = placeholder
             self.fields[field].widget.attrs['class'] = 'stripe-style-input'
             # Remove form field labels as custom placeholders have been added
             self.fields[field].label = False
